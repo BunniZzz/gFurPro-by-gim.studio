@@ -125,7 +125,7 @@ FFurData::FFurData()
 
 FFurData::~FFurData()
 {
-	if (FurSplinesUsed != FurSplinesAssigned)
+   if (!IsEngineExitRequested() && FurSplinesUsed != FurSplinesAssigned)
 	{
 		if (FurSplinesUsed->IsValidLowLevel())
 			FurSplinesUsed->ConditionalBeginDestroy();
@@ -135,7 +135,7 @@ FFurData::~FFurData()
 	IndexBuffer.ReleaseResource();
 
 #if WITH_EDITORONLY_DATA
-	if (FurSplinesAssigned)
+ if (!IsEngineExitRequested() && FurSplinesAssigned)
 		FurSplinesAssigned->RemoveFromRoot();
 #endif // WITH_EDITORONLY_DATA
 }

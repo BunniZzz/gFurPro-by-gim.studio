@@ -1051,20 +1051,27 @@ void FFurSkinData::CreateVertexFactories(TArray<FFurVertexFactory*>& VertexFacto
 
 FFurSkinData::~FFurSkinData()
 {
-	UnbindChangeDelegates();
+    if (!IsEngineExitRequested())
+		UnbindChangeDelegates();
 
 #if WITH_EDITORONLY_DATA
-	if (SkeletalMesh)
-		SkeletalMesh->RemoveFromRoot();
-	for (USkeletalMesh* Mesh : GuideMeshes)
-		if (Mesh)
-			Mesh->RemoveFromRoot();
+   if (!IsEngineExitRequested())
+	{
+		if (SkeletalMesh)
+			SkeletalMesh->RemoveFromRoot();
+		for (USkeletalMesh* Mesh : GuideMeshes)
+			if (Mesh)
+				Mesh->RemoveFromRoot();
+	}
 #endif // WITH_EDITORONLY_DATA
 }
 
 void FFurSkinData::UnbindChangeDelegates()
 {
 #if WITH_EDITORONLY_DATA
+ if (IsEngineExitRequested())
+		return;
+
 	if (FurSplinesAssigned)
 	{
 		if (FurSplinesChangeHandle.IsValid())
